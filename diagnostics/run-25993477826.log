@@ -1,0 +1,21 @@
+=== run 25993477826 sha b5f574ecd220b3b5cbe9180c08b32bb4e5a0b05f ===
+dl=failure hls=skipped audio=skipped stt=skipped
+
+== work/ ==
+total 136
+drwxr-xr-x  2 runner runner  4096 May 17 14:27 .
+drwxr-xr-x 18 runner runner  4096 May 17 14:25 ..
+-rw-r--r--  1 runner runner   335 May 17 14:27 grab.log
+-rw-r--r--  1 runner runner     2 May 17 14:27 network.json
+-rw-r--r--  1 runner runner 52732 May 17 14:27 play.html
+-rw-r--r--  1 runner runner 65846 May 17 14:27 screenshot.png
+
+== grab.log ==
+GOTO https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+no password input found - may already be authenticated
+no video element after wait: Page.wait_for_selector: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator("video")
+
+video.src = 
+FAIL: no candidate URL

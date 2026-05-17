@@ -1,0 +1,8 @@
+GOTO https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+no password input found - may already be authenticated
+no video element after wait: Page.wait_for_selector: Timeout 60000ms exceeded.
+Call log:
+  - waiting for locator("video")
+
+video.src = 
+FAIL: no candidate URL
