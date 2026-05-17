@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/zoom-relay.yml'
       - '.github/zoom-job.json'
+      - 'scripts/zoom_grab.py'
   workflow_dispatch:
 
 permissions:
@@ -42,131 +43,38 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
 
-      - name: Python deps (yt-dlp master)
+      - name: Python deps
         run: |
           pip install --quiet --upgrade pip
-          pip install --quiet 'git+https://github.com/yt-dlp/yt-dlp.git'
-          pip install --quiet faster-whisper requests
+          pip install --quiet playwright requests faster-whisper
+          playwright install --with-deps chromium
 
-      - name: Attempt 1 - yt-dlp master
-        id: dl1
+      - name: Grab recording via Playwright
+        id: dl
         continue-on-error: true
         run: |
           set -uxo pipefail
-          yt-dlp --version | tee -a work/yt-dlp.log
-          yt-dlp --video-password "$PW" \
-            -o 'work/recording.%(ext)s' -f 'best[ext=mp4]/best' \
-            --no-progress -v "$URL" >> work/yt-dlp.log 2>&1
-          echo "exit=$?" >> work/yt-dlp.log
-          test -s work/recording.mp4 || test -s work/recording.webm
+          python3 scripts/zoom_grab.py 2>&1 | tee work/grab.log
+          test -s work/recording.mp4 || test -s work/recording.m3u8
 
-      - name: Attempt 2 - manual via Zoom JSON API
-        id: dl2
-        if: steps.dl1.outcome == 'failure'
-        continue-on-error: true
+      - name: Materialize mp4 from HLS if needed
+        id: hls
+        if: steps.dl.outcome == 'success'
         run: |
-          set -uxo pipefail
-          python3 <<'PY' 2>&1 | tee -a work/manual.log
-          import os, re, sys, json, urllib.parse as up, requests
-          URL = os.environ["URL"]; PW = os.environ["PW"]
-          s = requests.Session()
-          s.headers.update({
-            "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15",
-            "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language":"en-US,en;q=0.9",
-          })
-          # 1. share page (sets _zm cookies for csrf)
-          r1 = s.get(URL, allow_redirects=True)
-          print("GET share:", r1.status_code, r1.url)
-          html1 = r1.text
-          open("work/share.html","w").write(html1)
-          share_id = (re.search(r'/rec/share/([^/?#]+)', r1.url) or re.search(r'/rec/share/([^/?#]+)', URL)).group(1)
-          print("share_id:", share_id)
-          # 2. Submit password — Zoom's modern flow uses /nws/recording/1.0/validate-meeting-passwd
-          base = f"{up.urlparse(r1.url).scheme}://{up.urlparse(r1.url).netloc}"
-          # Try both old and new validate endpoints
-          for path in ["/nws/recording/1.0/validate-meeting-passwd", "/rec/validate_meet_passwd"]:
-            payload = {"shareId": share_id, "passwd": PW}
-            try:
-              rv = s.post(base+path, json=payload, headers={"Content-Type":"application/json"}, timeout=30)
-              print("VALIDATE", path, rv.status_code, rv.text[:300])
-            except Exception as e:
-              print("VALIDATE err", path, e)
-            try:
-              rv = s.post(base+path, data={"id":share_id,"passwd":PW,"action":"viewdetailpage"}, timeout=30)
-              print("VALIDATE form", path, rv.status_code, rv.text[:300])
-            except Exception as e:
-              print("VALIDATE form err", path, e)
-          # 3. Hit share-info JSON API
-          for params in [
-            {"shareId": share_id, "canPlayFromShare":"true", "from":"my_recording", "continueMode":"true", "componentName":"rec-play"},
-            {"shareId": share_id},
-          ]:
-            try:
-              ri = s.get(base+"/nws/recording/1.0/play/share-info", params=params, headers={"Accept":"application/json"}, timeout=30)
-              print("share-info", ri.status_code, ri.text[:800])
-              open("work/share-info.json","w").write(ri.text)
-              try:
-                j = ri.json()
-                redir = j.get("result",{}).get("redirectUrl") or j.get("redirectUrl")
-                if redir:
-                  print("redirectUrl:", redir)
-                  rp = s.get(redir if redir.startswith("http") else base+redir, allow_redirects=True, timeout=60)
-                  print("play:", rp.status_code, rp.url)
-                  open("work/play.html","w").write(rp.text)
-              except Exception as e:
-                print("json parse err", e)
-            except Exception as e:
-              print("share-info err", e)
-          # 4. Search all HTMLs for mp4 URLs and key JSON fields
-          html_blobs = []
-          for f in ("work/share.html","work/play.html","work/share-info.json"):
-            try:
-              html_blobs.append(open(f).read())
-            except: pass
-          combined = "\n".join(html_blobs)
-          print("combined size:", len(combined))
-          # broad patterns
-          patterns = {
-            "fileId": r'"file[_-]?Id"\s*:\s*"([^"]+)"',
-            "viewMp4Url": r'"viewMp4Url"\s*:\s*"([^"]+)"',
-            "fileUrl": r'"fileUrl"\s*:\s*"([^"]+)"',
-            "videoUrl": r'"videoUrl"\s*:\s*"([^"]+)"',
-            "mp4Url": r'"mp4Url"\s*:\s*"([^"]+)"',
-            "mp4Bare": r'(https?://[^"\\\s]+\.mp4[^"\\\s]*)',
-            "redirectUrl": r'"redirectUrl"\s*:\s*"([^"]+)"',
-            "streamingUrl": r'"streaming[_-]?[Uu]rl"\s*:\s*"([^"]+)"',
-          }
-          found = {}
-          for k,pat in patterns.items():
-            m = re.search(pat, combined)
-            if m: found[k] = m.group(1)
-          print("FOUND:", json.dumps(found, indent=2)[:2000])
-          # Try to download whichever URL we got
-          candidate = None
-          for k in ("viewMp4Url","mp4Url","fileUrl","videoUrl","mp4Bare","streamingUrl"):
-            if k in found:
-              candidate = found[k]; break
-          if candidate:
-            candidate = candidate.replace("\\u0026","&").encode().decode("unicode_escape")
-            print("trying mp4:", candidate)
-            with s.get(candidate, stream=True, timeout=120) as v:
-              print("mp4 status:", v.status_code)
-              v.raise_for_status()
-              with open("work/recording.mp4","wb") as f:
-                for c in v.iter_content(1<<20): f.write(c)
-            print("size:", os.path.getsize("work/recording.mp4"))
-          else:
-            sys.exit("No video URL discovered after auth + share-info")
-          PY
-          test -s work/recording.mp4
+          set -euxo pipefail
+          if [ -s work/recording.m3u8 ] && [ ! -s work/recording.mp4 ]; then
+            ffmpeg -y -hide_banner -loglevel error \
+              -headers "$(cat work/headers.txt)" \
+              -i work/recording.m3u8 -c copy work/recording.mp4
+          fi
+          ls -lh work/recording.mp4
 
       - name: Extract audio
         id: audio
-        if: steps.dl1.outcome == 'success' || steps.dl2.outcome == 'success'
+        if: steps.dl.outcome == 'success'
         run: |
           set -euxo pipefail
-          IN=$(ls work/recording.* 2>/dev/null | head -1)
+          IN=$(ls work/recording.mp4 work/recording.* 2>/dev/null | head -1)
           ffmpeg -y -hide_banner -loglevel error \
             -i "$IN" -vn -ac 1 -ar 16000 -c:a libmp3lame -b:a 64k work/audio.mp3
           ls -lh work/audio.mp3
@@ -210,14 +118,12 @@ jobs:
           mkdir -p "$DUMP"
           {
             echo "=== run ${{ github.run_id }} sha ${{ github.sha }} ==="
-            echo "dl1=${{ steps.dl1.outcome }} dl2=${{ steps.dl2.outcome }} audio=${{ steps.audio.outcome }} stt=${{ steps.stt.outcome }}"
+            echo "dl=${{ steps.dl.outcome }} hls=${{ steps.hls.outcome }} audio=${{ steps.audio.outcome }} stt=${{ steps.stt.outcome }}"
             echo ""
             echo "== work/ =="; ls -la work/ 2>/dev/null
-            echo ""; echo "== yt-dlp.log tail =="; tail -150 work/yt-dlp.log 2>/dev/null
-            echo ""; echo "== manual.log =="; cat work/manual.log 2>/dev/null
+            echo ""; echo "== grab.log =="; cat work/grab.log 2>/dev/null
           } > "$DBG"
-          # Save full HTML/JSON for inspection (sanitize-free since private repo)
-          for f in work/share.html work/play.html work/share-info.json work/yt-dlp.log work/manual.log; do
+          for f in work/grab.log work/network.json work/play.html work/screenshot.png work/cookies.json work/headers.txt; do
             [ -f "$f" ] && cp "$f" "$DUMP/$(basename "$f")"
           done
           git config user.name  "zoom-relay-bot"
