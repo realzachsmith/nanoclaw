@@ -1,0 +1,88 @@
+=== run info ===
+run_id: 25993223898
+sha:    40979b8106fcd3e709d0602c94a538548e37bedf
+time:   2026-05-17T14:14:17Z
+
+=== outcomes ===
+dl1   : failure
+dl2   : failure
+audio : skipped
+stt   : skipped
+
+=== job config (password masked) ===
+{
+  "url": "https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD",
+  "password": "<masked>",
+  "output": "transcripts/zoom-odyssey-oliver-cameron.md"
+}
+
+=== work/ tree ===
+total 1032
+drwxr-xr-x  2 runner runner   4096 May 17 14:14 .
+drwxr-xr-x 18 runner runner   4096 May 17 14:13 ..
+-rw-r--r--  1 runner runner    490 May 17 14:14 manual.log
+-rw-r--r--  1 runner runner 516223 May 17 14:14 step1.html
+-rw-r--r--  1 runner runner 516452 May 17 14:14 step3.html
+-rw-r--r--  1 runner runner   2829 May 17 14:14 yt-dlp.log
+
+=== yt-dlp.log (tail 200) ===
+2026.03.17
+[debug] Command-line config: ['--video-password', 'PRIVATE', '-o', 'work/recording.%(ext)s', '-f', 'best[ext=mp4]/best', '--no-progress', '-v', 'https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD']
+[debug] Encodings: locale UTF-8, fs utf-8, pref UTF-8, out utf-8 (No ANSI), error utf-8 (No ANSI), screen utf-8 (No ANSI)
+[debug] yt-dlp version stable@2026.03.17 from yt-dlp/yt-dlp [04d6974f5] (pip)
+[debug] Python 3.11.15 (CPython x86_64 64bit) - Linux-6.17.0-1013-azure-x86_64-with-glibc2.39 (OpenSSL 3.0.13 30 Jan 2024, glibc 2.39)
+[debug] exe versions: ffmpeg 6.1.1 (setts), ffprobe 6.1.1
+[debug] Optional libraries: certifi-2026.04.22, requests-2.34.2, sqlite3-3.45.1, urllib3-2.7.0
+[debug] JS runtimes: none
+[debug] Proxy map: {}
+[debug] Request Handlers: urllib, requests
+[debug] Plugin directories: none
+[debug] Loaded 1864 extractors
+[zoom] Extracting URL: https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+[zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Downloading share webpage
+[zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Downloading share info JSON
+[zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Downloading play webpage
+ERROR: [zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Unable to extract data; please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/common.py", line 765, in extract
+    ie_result = self._real_extract(url)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/zoom.py", line 104, in _real_extract
+    file_id = self._get_page_data(webpage, video_id)['fileId']
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/zoom.py", line 63, in _get_page_data
+    return self._search_json(
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/common.py", line 1361, in _search_json
+    json_string = self._search_regex(
+                  ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/common.py", line 1347, in _search_regex
+    raise RegexNotFoundError(f'Unable to extract {_name}')
+
+yt-dlp exit: 1
+total 4.0K
+-rw-r--r-- 1 runner runner 2.7K May 17 14:14 yt-dlp.log
+
+=== manual.log ===
+step1 GET 200 https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+POST https://us06web.zoom.us/rec/validate_meet_passwd 200
+POST https://us06web.zoom.us/rec/validate?meetingId=HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD 404
+POST https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD 200
+step3 GET 200
+No mp4 URL found in HTML
+
+=== step1.html (first 4000 chars) ===
+<!doctype html>
+
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en-US">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# zoomvideocall: http://ogp.me/ns/fb/zoomvideocall#">
+<script nonce="ntr_i2cCS9aChkLJeofrDg">
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).__MONITOR__=t()}(this,(function(){"use strict";
+var e=function(){return e=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var i in t=arguments[n])Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},e.apply(this,arguments)};function t(e,t,n,r){return new(n||(n=Promise))((function(i,o){function s(e){try{c(r.next(e))}catch(e){o(e)}}function a(e){try{c(r.throw(e))}catch(e){o(e)}}function c(e){var t;e.done?i(e.value):(t=e.value,t instanceof n?t:new n((function(e){e(t)}))).then(s,a)}c((r=r.apply(e,t||[])).next())}))}function n(e,t){var n,r,i,o,s={label:0,sent:function(){if(1&i[0])throw i[1];return i[1]},trys:[],ops:[]};return o={next:a(0),throw:a(1),return:a(2)},"function"==typeof Symbol&&(o[Symbol.iterator]=function(){return this}),o;function a(o){return function(a){return function(o){if(n)throw new TypeError("Generator is already executing.");for(;s;)try{if(n=1,r&&(i=2&o[0]?r.return:o[0]?r.throw||((i=r.return)&&i.call(r),0):r.next)&&!(i=i.call(r,o[1])).done)return i;switch(r=0,i&&(o=[2&o[0],i.value]),o[0]){case 0:case 1:i=o;break;case 4:return s.label++,{value:o[1],done:!1};case 5:s.label++,r=o[1],o=[0];continue;case 7:o=s.ops.pop(),s.trys.pop();continue;default:if(!(i=s.trys,(i=i.length>0&&i[i.length-1])||6!==o[0]&&2!==o[0])){s=0;continue}if(3===o[0]&&(!i||o[1]>i[0]&&o[1]<i[3])){s.label=o[1];break}if(6===o[0]&&s.label<i[1]){s.label=i[1],i=o;break}if(i&&s.label<i[2]){s.label=i[2],s.ops.push(o);break}i[2]&&s.ops.pop(),s.trys.pop();continue}o=t.call(e,s)}catch(e){o=[6,e],r=0}finally{n=i=0}if(5&o[0])throw o[1];return{value:o[0]?o[1]:void 0,done:!0}}([o,a])}}}function r(e,t){for(var n in t)e[n]=t[n];return e}var i={logger:!1,enableMonitorPerf:!1,isLoggedIn:!1,path:"",errorLimit:20,cdnDetectTargetUrl:"",cdnDetectCookieKey:"cdn_detect_result",enableMonitorGlobal:!0,enableMonitorVueError:!0,enableMonitorCdn:!0,trackingEndpointUrl:"",debounceSeconds:300,enableDomDetect:!0,isDevEnv:!1,trackingId:""};let o;var s;let a;var c;(s=o||(o={})).ID="*xxxxxxxxxxxxxxxxxxxxxx",Object.freeze(s),(c=a||(a={})).Masked="masked",c.Unmasked="unmasked",c.Disabled="disabled",c.Na="na",Object.freeze(c);var u=function(){return u=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var i in t=arguments[n])Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},u.apply(this,arguments)};function l(e,t,n){if(n||2===arguments.length)for(var r,i=0,o=t.length;i<o;i++)!r&&i in t||(r||(r=Array.prototype.slice.call(t,0,i)),r[i]=t[i]);return e.concat(r||Array.prototype.slice.call(t))}"function"==typeof SuppressedError&&SuppressedError;var d="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};var f={exports:{}},h="undefined"!=typeof crypto&&crypto.getRandomValues&&crypto.getRandomValues.bind(crypto)||"undefined"!=typeof msCrypto&&"function"==typeof window.msCrypto.getRandomValues&&msCrypto.getRandomValues.bind(msCrypto);if(h){var m=new Uint8Array(16);f.exports=function(){return h(m),m}}else{var v=new Array(16);f.exports=function(){for(var e,t=0;t<16;t++)3&t||(e=4294967296*Math.random()),v[t]=e>>>((3&t)<<3)&255;return v}}for(var p=[],g=0;g<256;++g)p[g]=(g+256).toString(16).substr(1);var y,w,_=function(e,t){var n=t||0,r=p;return[r[e[n++]],r[e[n++]],r[e[n++]],r[e[n++]],"-",r[e[n++]],r[e[n++]],"-",r[e[n++]],r[e[n++]],"-",r[e[n++]],r[e[n++]],"-",r[e[n++]],r[e[n++]],r[e[n++]],r[e[n++]],r[e[n++]],r[e[n++]]].join("")},b=f.exports,T=_,E=0,k=0,x=f.exports,C=_,N=function(e,t,n){var r=t&&n||0,i=t||[],o=(e=e||{}).node||y,s=void 0!
+=== step3.html (first 4000 chars) ===
+<!doctype html>
+
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en-US">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# zoomvideocall: http://ogp.me/ns/fb/zoomvideocall#">
+<script nonce="ntr_i2cCS9aChkLJeofrDg">
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).__MONITOR__=t()}(this,(function(){"use strict";
+var e=function(){return e=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var i in t=arguments[n])Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},e.apply(this,arguments)};function t(e,t,n,r){return new(n||(n=Promise))((function(i,o){function s(e){try{c(r.next(e))}catch(e){o(e)}}function a(e){try{c(r.throw(e))}catch(e){o(e)}}function c(e){var t;e.done?i(e.value):(t=e.value,t instanceof n?t:new n((function(e){e(t)}))).then(s,a)}c((r=r.apply(e,t||[])).next())}))}function n(e,t){var n,r,i,o,s={label:0,sent:function(){if(1&i[0])throw i[1];return i[1]},trys:[],ops:[]};return o={next:a(0),throw:a(1),return:a(2)},"function"==typeof Symbol&&(o[Symbol.iterator]=function(){return this}),o;function a(o){return function(a){return function(o){if(n)throw new TypeError("Generator is already executing.");for(;s;)try{if(n=1,r&&(i=2&o[0]?r.return:o[0]?r.throw||((i=r.return)&&i.call(r),0):r.next)&&!(i=i.call(r,o[1])).done)return i;switch(r=0,i&&(o=[2&o[0],i.value]),o[0]){case 0:case 1:i=o;break;case 4:return s.label++,{value:o[1],done:!1};case 5:s.label++,r=o[1],o=[0];continue;case 7:o=s.ops.pop(),s.trys.pop();continue;default:if(!(i=s.trys,(i=i.length>0&&i[i.length-1])||6!==o[0]&&2!==o[0])){s=0;continue}if(3===o[0]&&(!i||o[1]>i[0]&&o[1]<i[3])){s.label=o[1];break}if(6===o[0]&&s.label<i[1]){s.label=i[1],i=o;break}if(i&&s.label<i[2]){s.label=i[2],s.ops.push(o);break}i[2]&&s.ops.pop(),s.trys.pop();continue}o=t.call(e,s)}catch(e){o=[6,e],r=0}finally{n=i=0}if(5&o[0])throw o[1];return{value:o[0]?o[1]:void 0,done:!0}}([o,a])}}}function r(e,t){for(var n in t)e[n]=t[n];return e}var i={logger:!1,enableMonitorPerf:!1,isLoggedIn:!1,path:"",errorLimit:20,cdnDetectTargetUrl:"",cdnDetectCookieKey:"cdn_detect_result",enableMonitorGlobal:!0,enableMonitorVueError:!0,enableMonitorCdn:!0,trackingEndpointUrl:"",debounceSeconds:300,enableDomDetect:!0,isDevEnv:!1,trackingId:""};let o;var s;let a;var c;(s=o||(o={})).ID="*xxxxxxxxxxxxxxxxxxxxxx",Object.freeze(s),(c=a||(a={})).Masked="masked",c.Unmasked="unmasked",c.Disabled="disabled",c.Na="na",Object.freeze(c);var u=function(){return u=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var i in t=arguments[n])Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},u.apply(this,arguments)};function l(e,t,n){if(n||2===arguments.length)for(var r,i=0,o=t.length;i<o;i++)!r&&i in t||(r||(r=Array.prototype.slice.call(t,0,i)),r[i]=t[i]);return e.concat(r||Array.prototype.slice.call(t))}"function"==typeof SuppressedError&&SuppressedError;var d="undefined"!=typeof globalThis?globalThis:"undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{};var f={exports:{}},h="undefined"!=typeof crypto&&crypto.getRandomValues&&crypto.getRandomValues.bind(crypto)||"undefined"!=typeof msCrypto&&"function"==typeof window.msCrypto.getRandomValues&&msCrypto.getRandomValues.bind(msCrypto);if(h){var m=new Uint8Array(16);f.exports=function(){return h(m),m}}else{var v=new Array(16);f.exports=function(){for(var e,t=0;t<16;t++)3&t||(e=4294967296*Math.random()),v[t]=e>>>((3&t)<<3)&255;return v}}for(var p=[],g=0;g<256;++g)p[g]=(g+256).toString(16).substr(1);var y,w,_=function(e,t){var n=t||0,r=p;return[r[e[n++]],r[e[n++]],r[e[n++]],r[e[n++]],"-",r[e[n++]],r[e[n++]],"-",r[e[n++]],r[e[n++]],"-",r[e[n++]],r[e[n++]],"-",r[e[n++]],r[e[n++]],r[e[n++]],r[e[n++]],r[e[n++]],r[e[n++]]].join("")},b=f.exports,T=_,E=0,k=0,x=f.exports,C=_,N=function(e,t,n){var r=t&&n||0,i=t||[],o=(e=e||{}).node||y,s=void 0!
