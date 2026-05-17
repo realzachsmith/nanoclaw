@@ -1,0 +1,185 @@
+name: Zoom Relay - Odyssey/Oliver
+
+on:
+  push:
+    branches: [claude/zoom-transcript-generation-RFmtV]
+    paths:
+      - '.github/workflows/zoom-relay.yml'
+      - '.github/zoom-job.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zoom-relay
+  cancel-in-progress: false
+
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read job config
+        id: cfg
+        run: |
+          set -euo pipefail
+          URL=$(jq -r .url .github/zoom-job.json)
+          PW=$(jq -r .password .github/zoom-job.json)
+          OUT=$(jq -r .output .github/zoom-job.json)
+          echo "::add-mask::$PW"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "output=$OUT" >> "$GITHUB_OUTPUT"
+          echo "PW<<EOF" >> "$GITHUB_ENV"
+          echo "$PW" >> "$GITHUB_ENV"
+          echo "EOF" >> "$GITHUB_ENV"
+          echo "URL=$URL" >> "$GITHUB_ENV"
+          echo "OUT=$OUT" >> "$GITHUB_ENV"
+
+      - name: Install system deps
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg jq curl
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install --quiet yt-dlp faster-whisper
+
+      - name: Download Zoom recording (yt-dlp)
+        id: dl
+        continue-on-error: true
+        run: |
+          set -euxo pipefail
+          mkdir -p work
+          yt-dlp --version
+          yt-dlp \
+            --video-password "$PW" \
+            -o 'work/recording.%(ext)s' \
+            -f 'best[ext=mp4]/best' \
+            --no-progress \
+            -v \
+            "$URL" 2>&1 | tee work/yt-dlp.log
+          ls -lh work/
+
+      - name: Fallback download (manual auth)
+        if: steps.dl.outcome == 'failure'
+        run: |
+          set -euxo pipefail
+          mkdir -p work
+          python3 <<'PY'
+          import os, re, sys, json
+          import urllib.parse as up
+          import requests
+
+          url = os.environ["URL"]
+          pw  = os.environ["PW"]
+          s = requests.Session()
+          s.headers.update({
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                         "(KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9",
+          })
+          r = s.get(url, allow_redirects=True)
+          print("GET", r.status_code, r.url, file=sys.stderr)
+          html = r.text
+          token = None
+          m = re.search(r'name="_csrf_token"\s+value="([^"]+)"', html)
+          if m: token = m.group(1)
+          fid_m  = re.search(r'name="id"\s+value="([^"]+)"', html)
+          file_id = fid_m.group(1) if fid_m else None
+          continue_url = r.url
+          parsed = up.urlparse(r.url)
+          base = f"{parsed.scheme}://{parsed.netloc}"
+          post_url = f"{base}/rec/validate_meet_passwd"
+          data = {"id": file_id or "", "passwd": pw, "action": "viewdetailpage"}
+          if token: data["_csrf_token"] = token
+          r2 = s.post(post_url, data=data, allow_redirects=True)
+          print("POST validate", r2.status_code, r2.url, file=sys.stderr)
+          print(r2.text[:2000], file=sys.stderr)
+          r3 = s.get(continue_url, allow_redirects=True)
+          html3 = r3.text
+          m = re.search(r'"viewMp4Url"\s*:\s*"([^"]+)"', html3) \
+              or re.search(r'"fileUrl"\s*:\s*"([^"]+)"', html3) \
+              or re.search(r'(https?://[^"\\]+\.mp4[^"\\]*)', html3)
+          if not m:
+            with open("work/play.html","w") as f: f.write(html3)
+            sys.exit("Could not find mp4 URL on play page; HTML saved to work/play.html")
+          mp4 = m.group(1).replace("\\u0026", "&").encode().decode("unicode_escape")
+          print("MP4:", mp4, file=sys.stderr)
+          with s.get(mp4, stream=True) as v:
+            v.raise_for_status()
+            with open("work/recording.mp4","wb") as f:
+              for chunk in v.iter_content(1<<20):
+                f.write(chunk)
+          print("Downloaded:", os.path.getsize("work/recording.mp4"), file=sys.stderr)
+          PY
+          ls -lh work/
+
+      - name: Extract mono 16kHz audio
+        run: |
+          set -euxo pipefail
+          IN=$(ls work/recording.* | head -1)
+          ffmpeg -y -hide_banner -loglevel error \
+            -i "$IN" -vn -ac 1 -ar 16000 -c:a libmp3lame -b:a 64k work/audio.mp3
+          ls -lh work/audio.mp3
+
+      - name: Transcribe (faster-whisper base.en)
+        run: |
+          set -euxo pipefail
+          mkdir -p "$(dirname "$OUT")"
+          python3 - <<'PY'
+          import os, datetime
+          from faster_whisper import WhisperModel
+          model = WhisperModel("base.en", device="cpu", compute_type="int8")
+          segments, info = model.transcribe(
+              "work/audio.mp3",
+              vad_filter=True,
+              beam_size=1,
+              language="en",
+              condition_on_previous_text=False,
+          )
+          lines = [
+            "# Zoom Recording Transcript",
+            "",
+            "- Meeting: Zoom Call with Odyssey and Oliver Cameron",
+            f"- Detected duration: {datetime.timedelta(seconds=int(info.duration))}",
+            f"- Language: {info.language} (p={info.language_probability:.2f})",
+            "- Model: faster-whisper base.en (int8, CPU)",
+            f"- Generated: {datetime.datetime.utcnow().isoformat(timespec='seconds')}Z",
+            "",
+            "---",
+            "",
+          ]
+          for s in segments:
+              t = str(datetime.timedelta(seconds=int(s.start)))
+              lines.append(f"[{t}] {s.text.strip()}")
+          out = os.environ["OUT"]
+          with open(out, "w") as f:
+              f.write("\n".join(lines) + "\n")
+          print("wrote", out, len(lines), "lines")
+          PY
+          wc -l "$OUT" || true
+          head -50 "$OUT" || true
+
+      - name: Commit transcript
+        run: |
+          set -euxo pipefail
+          git config user.name  "zoom-relay-bot"
+          git config user.email "zoom-relay-bot@users.noreply.github.com"
+          git add "$OUT"
+          if git diff --cached --quiet; then
+            echo "No changes"; exit 0
+          fi
+          git commit -m "transcribe: zoom recording [skip ci]" -m "Relay run for Odyssey/Oliver call."
+          for i in 1 2 3 4; do
+            git push origin HEAD:${{ github.ref_name }} && break
+            sleep $((2**i))
+          done
