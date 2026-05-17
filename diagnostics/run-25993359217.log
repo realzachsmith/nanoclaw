@@ -1,0 +1,73 @@
+=== run 25993359217 sha e9b202ea92b20c74cf80ed80e6aafe83b1e36236 ===
+dl1=failure dl2=failure audio=skipped stt=skipped
+
+== work/ ==
+total 1028
+drwxr-xr-x  2 runner runner   4096 May 17 14:20 .
+drwxr-xr-x 18 runner runner   4096 May 17 14:19 ..
+-rw-r--r--  1 runner runner   2582 May 17 14:20 manual.log
+-rw-r--r--  1 runner runner 515672 May 17 14:20 share-info.json
+-rw-r--r--  1 runner runner 516526 May 17 14:20 share.html
+-rw-r--r--  1 runner runner   2785 May 17 14:20 yt-dlp.log
+
+== yt-dlp.log tail ==
+2026.03.17
+[debug] Command-line config: ['--video-password', 'PRIVATE', '-o', 'work/recording.%(ext)s', '-f', 'best[ext=mp4]/best', '--no-progress', '-v', 'https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD']
+[debug] Encodings: locale UTF-8, fs utf-8, pref UTF-8, out utf-8 (No ANSI), error utf-8 (No ANSI), screen utf-8 (No ANSI)
+[debug] yt-dlp version stable@2026.03.17 from yt-dlp/yt-dlp [04d6974f5]
+[debug] Lazy loading extractors is disabled
+[debug] Python 3.11.15 (CPython x86_64 64bit) - Linux-6.17.0-1013-azure-x86_64-with-glibc2.39 (OpenSSL 3.0.13 30 Jan 2024, glibc 2.39)
+[debug] exe versions: ffmpeg 6.1.1 (setts), ffprobe 6.1.1
+[debug] Optional libraries: certifi-2026.04.22, requests-2.34.2, sqlite3-3.45.1, urllib3-2.7.0
+[debug] JS runtimes: none
+[debug] Proxy map: {}
+[debug] Request Handlers: urllib, requests
+[debug] Plugin directories: none
+[debug] Loaded 1864 extractors
+[zoom] Extracting URL: https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+[zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Downloading share webpage
+[zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Downloading share info JSON
+[zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Downloading play webpage
+ERROR: [zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Unable to extract data; please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/common.py", line 763, in extract
+    ie_result = self._real_extract(url)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/zoom.py", line 104, in _real_extract
+    file_id = self._get_page_data(webpage, video_id)['fileId']
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/zoom.py", line 63, in _get_page_data
+    return self._search_json(
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/common.py", line 1359, in _search_json
+    json_string = self._search_regex(
+                  ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/common.py", line 1345, in _search_regex
+    raise RegexNotFoundError(f'Unable to extract {_name}')
+
+
+== manual.log ==
+GET share: 200 https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+share_id: HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+VALIDATE /nws/recording/1.0/validate-meeting-passwd 200 {"status":false,"errorCode":300,"errorMessage":"Missing Request Parameters","result":null}
+VALIDATE form /nws/recording/1.0/validate-meeting-passwd 200 {"status":true,"errorCode":0,"errorMessage":null,"result":"viewdetailpage"}
+VALIDATE /rec/validate_meet_passwd 200 {"status":false,"errorCode":-1,"errorMessage":"500 Internal Server Error","result":null}
+VALIDATE form /rec/validate_meet_passwd 200 {"status":true,"errorCode":0,"errorMessage":null,"result":"viewdetailpage"}
+share-info 404 <!doctype html>
+
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en-US">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# zoomvideocall: http://ogp.me/ns/fb/zoomvideocall#">
+<script nonce="rAeN0s0jTv6_K3s_vw6-xw">
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).__MONITOR__=t()}(this,(function(){"use strict";
+var e=function(){return e=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var i in t=arguments[n])Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},e.apply(this,arguments)};function t(e,t,n,r){return new(n||(n=Promise))((function(i,o){function s(e){try{c(r.next(e))}catch(e){o(e)}}function a(e){try{c(r
+json parse err Expecting value: line 1 column 1 (char 0)
+share-info 404 <!doctype html>
+
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en-US">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# zoomvideocall: http://ogp.me/ns/fb/zoomvideocall#">
+<script nonce="rAeN0s0jTv6_K3s_vw6-xw">
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).__MONITOR__=t()}(this,(function(){"use strict";
+var e=function(){return e=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var i in t=arguments[n])Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},e.apply(this,arguments)};function t(e,t,n,r){return new(n||(n=Promise))((function(i,o){function s(e){try{c(r.next(e))}catch(e){o(e)}}function a(e){try{c(r
+json parse err Expecting value: line 1 column 1 (char 0)
+combined size: 1032083
+FOUND: {}
+No video URL discovered after auth + share-info

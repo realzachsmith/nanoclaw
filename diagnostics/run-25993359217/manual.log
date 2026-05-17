@@ -1,0 +1,25 @@
+GET share: 200 https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+share_id: HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+VALIDATE /nws/recording/1.0/validate-meeting-passwd 200 {"status":false,"errorCode":300,"errorMessage":"Missing Request Parameters","result":null}
+VALIDATE form /nws/recording/1.0/validate-meeting-passwd 200 {"status":true,"errorCode":0,"errorMessage":null,"result":"viewdetailpage"}
+VALIDATE /rec/validate_meet_passwd 200 {"status":false,"errorCode":-1,"errorMessage":"500 Internal Server Error","result":null}
+VALIDATE form /rec/validate_meet_passwd 200 {"status":true,"errorCode":0,"errorMessage":null,"result":"viewdetailpage"}
+share-info 404 <!doctype html>
+
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en-US">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# zoomvideocall: http://ogp.me/ns/fb/zoomvideocall#">
+<script nonce="rAeN0s0jTv6_K3s_vw6-xw">
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).__MONITOR__=t()}(this,(function(){"use strict";
+var e=function(){return e=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var i in t=arguments[n])Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},e.apply(this,arguments)};function t(e,t,n,r){return new(n||(n=Promise))((function(i,o){function s(e){try{c(r.next(e))}catch(e){o(e)}}function a(e){try{c(r
+json parse err Expecting value: line 1 column 1 (char 0)
+share-info 404 <!doctype html>
+
+<html xmlns:fb="http://ogp.me/ns/fb#" lang="en-US">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# zoomvideocall: http://ogp.me/ns/fb/zoomvideocall#">
+<script nonce="rAeN0s0jTv6_K3s_vw6-xw">
+!function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e="undefined"!=typeof globalThis?globalThis:e||self).__MONITOR__=t()}(this,(function(){"use strict";
+var e=function(){return e=Object.assign||function(e){for(var t,n=1,r=arguments.length;n<r;n++)for(var i in t=arguments[n])Object.prototype.hasOwnProperty.call(t,i)&&(e[i]=t[i]);return e},e.apply(this,arguments)};function t(e,t,n,r){return new(n||(n=Promise))((function(i,o){function s(e){try{c(r.next(e))}catch(e){o(e)}}function a(e){try{c(r
+json parse err Expecting value: line 1 column 1 (char 0)
+combined size: 1032083
+FOUND: {}
+No video URL discovered after auth + share-info

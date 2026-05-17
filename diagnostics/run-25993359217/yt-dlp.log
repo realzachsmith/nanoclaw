@@ -1,0 +1,33 @@
+2026.03.17
+[debug] Command-line config: ['--video-password', 'PRIVATE', '-o', 'work/recording.%(ext)s', '-f', 'best[ext=mp4]/best', '--no-progress', '-v', 'https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD']
+[debug] Encodings: locale UTF-8, fs utf-8, pref UTF-8, out utf-8 (No ANSI), error utf-8 (No ANSI), screen utf-8 (No ANSI)
+[debug] yt-dlp version stable@2026.03.17 from yt-dlp/yt-dlp [04d6974f5]
+[debug] Lazy loading extractors is disabled
+[debug] Python 3.11.15 (CPython x86_64 64bit) - Linux-6.17.0-1013-azure-x86_64-with-glibc2.39 (OpenSSL 3.0.13 30 Jan 2024, glibc 2.39)
+[debug] exe versions: ffmpeg 6.1.1 (setts), ffprobe 6.1.1
+[debug] Optional libraries: certifi-2026.04.22, requests-2.34.2, sqlite3-3.45.1, urllib3-2.7.0
+[debug] JS runtimes: none
+[debug] Proxy map: {}
+[debug] Request Handlers: urllib, requests
+[debug] Plugin directories: none
+[debug] Loaded 1864 extractors
+[zoom] Extracting URL: https://us06web.zoom.us/rec/share/HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD
+[zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Downloading share webpage
+[zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Downloading share info JSON
+[zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Downloading play webpage
+ERROR: [zoom] HtZMg84kv4DISGURGPzc0aI6uKkIXudGTjNULWdGadRuI_AOmkmOkO2PsLXYOHaB.dkeJi1Cc8n7YjWJD: Unable to extract data; please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/common.py", line 763, in extract
+    ie_result = self._real_extract(url)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/zoom.py", line 104, in _real_extract
+    file_id = self._get_page_data(webpage, video_id)['fileId']
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/zoom.py", line 63, in _get_page_data
+    return self._search_json(
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/common.py", line 1359, in _search_json
+    json_string = self._search_regex(
+                  ^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/yt_dlp/extractor/common.py", line 1345, in _search_regex
+    raise RegexNotFoundError(f'Unable to extract {_name}')
+
